@@ -3,6 +3,8 @@ import Web3 from "web3";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { ref, computed } from "vue";
+import abi from '../assets/abi.json';
+import { AbiItem } from 'web3-utils';
 
 const providerOptions = {
   walletconnect: {
@@ -14,7 +16,7 @@ const providerOptions = {
 };
 
 const web3Modal = new Web3Modal({
-  network: "ropsten", // optional
+  network: "rinkeby", // optional
   cacheProvider: true, // optional
   providerOptions // required
 });
@@ -53,7 +55,27 @@ async function connect() {
     fetchAccountData();
   });
 
-  await fetchAccountData();
+  const web3 = await fetchAccountData();
+  if (web3 === null) {
+    return;
+  }
+  console.log(web3);
+
+  const address = "0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2";
+
+  const contract = new web3.eth.Contract(abi as AbiItem[], address, {
+    from: selectedAccount.value?.toString(),
+  });
+  console.log('initialized contract', contract);
+
+  contract.methods.PRICE().call({}, "latest", (error, data) => {
+    const price = BigInt(data);
+    console.log(price);
+    const n = 1n;
+    contract.methods.mint(n).send({ value: (n * price).toString() }, (error, data) => {
+      console.log(error, data);
+    });
+  })
 }
 
 async function disconnect() {
@@ -87,7 +109,7 @@ async function fetchAccountData() {
   console.log("Got accounts", accounts);
   if (accounts.length < 1) {
     disconnect();
-    return;
+    return null;
   }
   selectedAccount.value = accounts[0];
 
@@ -104,6 +126,8 @@ async function fetchAccountData() {
   // with Ethereum node, we do not want to display any results
   // until data for all accounts is loaded
   await Promise.all(rowResolvers);
+
+  return web3;
 }
 </script>
 
