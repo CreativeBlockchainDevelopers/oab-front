@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import web3 from '../web3/main';
+import web3 from '../web3';
 
 const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
