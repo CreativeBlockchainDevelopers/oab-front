@@ -24,9 +24,12 @@ import MintButton from './components/MintButton.vue'
 <style>
 body {
   font-family: sans-serif;
-  color: #ccc;
   padding: 0;
   margin: 0;
+}
+
+#app {
+  color: #ccc;
 }
 </style>
 
