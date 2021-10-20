@@ -53,27 +53,7 @@ async function connect() {
     fetchAccountData();
   });
 
-  const web3 = await fetchAccountData();
-  if (web3 === null) {
-    return;
-  }
-  console.log(web3);
-
-  const address = "0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2";
-
-  const contract = new web3.eth.Contract(abi as AbiItem[], address, {
-    from: selectedAccount.value?.toString(),
-  });
-  console.log('initialized contract', contract);
-
-  contract.methods.PRICE().call({}, "latest", (error: any, data: any) => {
-    const price = BigInt(data);
-    console.log(price);
-    const n = 1n;
-    contract.methods.mint(n).send({ value: (n * price).toString() }, (error: any, data: any) => {
-      console.log(error, data);
-    });
-  })
+  await fetchAccountData();
 }
 
 async function disconnect() {
@@ -128,8 +108,32 @@ async function fetchAccountData() {
   return web3;
 }
 
+async function mint(amount = 1) {
+  const web3 = await fetchAccountData();
+  if (web3 === null) {
+    return;
+  }
+
+  const address = "0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2";
+
+  const contract = new web3.eth.Contract(abi as AbiItem[], address, {
+    from: selectedAccount.value?.toString(),
+  });
+  console.log('initialized contract', contract);
+
+  contract.methods.PRICE().call({}, "latest", (error: any, data: any) => {
+    const price = BigInt(data);
+    console.log(price);
+    const n = BigInt(amount);
+    contract.methods.mint(n).send({ value: (n * price).toString() }, (error: any, data: any) => {
+      console.log(error, data);
+    });
+  })
+}
+
 export default {
-    connect,
-    disconnect,
-    selectedAccount,
+  connect,
+  disconnect,
+  selectedAccount,
+  mint,
 }

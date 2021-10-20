@@ -3,15 +3,15 @@ import { computed } from "vue";
 import web3 from '../web3/main';
 
 const selectedAccount = computed(() => web3.selectedAccount.value);
-const isConnected = computed(() => selectedAccount.value !== null);
+const canMint = computed(() => selectedAccount.value !== null);
+const mintAmount = 1;
 </script>
 
 <template>
-  <div v-if="isConnected" className="container">
-    <span className="account-name" :title="selectedAccount?.toString()">{{ selectedAccount }}</span>
-    <button @click="web3.disconnect()" className="disconnect-btn">Disconnect</button>
+  <div className="container">
+    <input className="mint-amount" type="number" v-model="mintAmount">
+    <button @click="web3.mint(mintAmount)" :disabled="!canMint" className="mint-btn">Mint</button>
   </div>
-  <button v-else @click="web3.connect()">Connect</button>
 </template>
 
 <style scoped>
@@ -19,19 +19,24 @@ const isConnected = computed(() => selectedAccount.value !== null);
   background: #111;
   border: 1px solid #333;
   border-radius: 2em;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  padding-left: 1rem;
+  padding-left: .2rem;
 }
 
-.container .account-name {
+.container .mint-amount {
   display: inline-block;
-  max-width: 8em;
+  width: 3em;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
+  background: none;
+  color: inherit;
+  border: 0;
+  font: inherit;
 }
 
-.container .disconnect-btn {
+.container .mint-btn {
   border-radius: 0 2em 2em 0;
   padding-left: 0.7rem;
 }
@@ -50,5 +55,11 @@ button {
 button:hover {
   cursor: pointer;
   background: #ccc;
+}
+
+button:disabled {
+  cursor: inherit;
+  background: #999;
+  color: #666;
 }
 </style>
