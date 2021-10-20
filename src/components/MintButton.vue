@@ -6,12 +6,20 @@ const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
 const canMint = computed(() => isConnected.value && !web3.isMinting.value);
 const mintAmount = 1;
+
+async function mint() {
+  try {
+    await web3.mint(mintAmount);
+  } catch (error) {
+    console.error('error when minting', error);
+  }
+}
 </script>
 
 <template>
   <div v-if="isConnected" className="container">
     <input className="mint-amount" type="number" min="1" v-model="mintAmount">
-    <button @click="web3.mint(mintAmount)" :disabled="!canMint" className="mint-btn">Mint</button>
+    <button @click="mint()" :disabled="!canMint" className="mint-btn">Mint</button>
   </div>
   <div v-else className="container">
     <button @click="web3.connect()">Connect to mint</button>

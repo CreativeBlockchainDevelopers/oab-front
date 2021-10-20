@@ -4,6 +4,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 import abi from '../assets/abi.json';
 import { AbiItem } from 'web3-utils';
+import { Contract } from 'web3-eth-contract';
 
 const providerOptions = {
   walletconnect: {
@@ -20,7 +21,11 @@ const web3Modal = new Web3Modal({
   providerOptions // required
 });
 
+const contractAddress = "0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2";
+
 let provider: any;
+let contract: null | Contract = null;
+
 const selectedAccount = ref<null | string>(null);
 const isMinting = ref(false);
 
@@ -65,6 +70,7 @@ async function disconnect() {
   }
   web3Modal.clearCachedProvider();
   provider = null;
+  contract = null;
 
   selectedAccount.value = null;
 }
@@ -106,34 +112,47 @@ async function fetchAccountData() {
   // until data for all accounts is loaded
   await Promise.all(rowResolvers);
 
+  contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+  console.log('initialized contract', contract);
+
   return web3;
 }
 
-async function mint(amount = 1) {
+async function getPrice(): Promise<bigint> {
+  return new Promise((resolve, reject) => {
+    if (contract === null) {
+      return reject();
+    }
+    contract.methods.PRICE().call({}, "latest", (error: any, data: string) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(BigInt(data));
+    });
+  });
+}
+
+async function mint(amount = 1): Promise<string> {
   if (isMinting.value) {
-    return;
+    throw new Error();
   }
   isMinting.value = true;
 
-  const web3 = await fetchAccountData();
-  if (web3 === null) {
-    return;
-  }
-
-  const address = "0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2";
-
-  const contract = new web3.eth.Contract(abi as AbiItem[], address, {
-    from: selectedAccount.value?.toString(),
-  });
-  console.log('initialized contract', contract);
-
-  contract.methods.PRICE().call({}, "latest", (error: any, data: any) => {
-    const price = BigInt(data);
-    console.log(price);
-    const n = BigInt(amount);
-    contract.methods.mint(n).send({ value: (n * price).toString() }, (error: any, data: any) => {
-      console.log(error, data);
+  const price = await getPrice();
+  const n = BigInt(amount);
+  return new Promise((resolve, reject) => {
+    if (contract === null) {
+      return reject();
+    }
+    contract.methods.mint(n).send({
+      from: selectedAccount.value,
+      value: (n * price).toString(),
+    }, (error: any, data: string) => {
+      if (error) {
+        reject(error);
+      }
       isMinting.value = false;
+      resolve(data);
     });
   });
 }
