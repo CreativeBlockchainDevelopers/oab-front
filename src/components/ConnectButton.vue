@@ -59,7 +59,7 @@ async function connect() {
 async function disconnect() {
   console.log("Killing the wallet connection", provider);
 
-  if (provider.close) {
+  if (provider && provider.close) {
     await provider.close();
   }
   web3Modal.clearCachedProvider();
@@ -85,6 +85,10 @@ async function fetchAccountData() {
 
   // MetaMask does not give you all accounts, only the selected account
   console.log("Got accounts", accounts);
+  if (accounts.length < 1) {
+    disconnect();
+    return;
+  }
   selectedAccount.value = accounts[0];
 
   // Go through all accounts and get their ETH balance
