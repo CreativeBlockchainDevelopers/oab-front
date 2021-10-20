@@ -25,6 +25,8 @@ const contractAddress = "0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2";
 
 let provider: any;
 let contract: null | Contract = null;
+let totalSupply = ref(0);
+let maxTokens = ref(0);
 
 const selectedAccount = ref<null | string>(null);
 const isMinting = ref(false);
@@ -115,6 +117,9 @@ async function fetchAccountData() {
   contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
   console.log('initialized contract', contract);
 
+  maxTokens.value = await getMaxTokens();
+  totalSupply.value = await getTotalSupply();
+
   return web3;
 }
 
@@ -128,6 +133,34 @@ async function getPrice(): Promise<bigint> {
         reject(error);
       }
       resolve(BigInt(data));
+    });
+  });
+}
+
+async function getMaxTokens(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    if (contract === null) {
+      return reject();
+    }
+    contract.methods.MAX_TOKENS().call({}, "latest", (error: any, data: string) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(Number(data));
+    });
+  });
+}
+
+async function getTotalSupply(): Promise<number> {
+  return new Promise((resolve, reject) => {
+    if (contract === null) {
+      return reject();
+    }
+    contract.methods.totalSupply().call({}, "latest", (error: any, data: string) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(Number(data));
     });
   });
 }
@@ -163,4 +196,6 @@ export default {
   selectedAccount,
   mint,
   isMinting,
+  totalSupply,
+  maxTokens,
 }

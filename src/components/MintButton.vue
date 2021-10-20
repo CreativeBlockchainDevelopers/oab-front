@@ -18,11 +18,14 @@ async function mint() {
 
 <template>
   <div v-if="isConnected" className="container">
-    <input className="mint-amount" type="number" min="1" v-model="mintAmount">
+    <input className="mint-amount" type="number" min="1" :max="web3.maxTokens.value - web3.totalSupply.value" v-model="mintAmount">
     <button @click="mint()" :disabled="!canMint" className="mint-btn">Mint</button>
   </div>
   <div v-else className="container">
     <button @click="web3.connect()">Connect to mint</button>
+  </div>
+  <div>
+    {{ web3.totalSupply }} / {{ web3.maxTokens }}
   </div>
 </template>
 
@@ -45,7 +48,9 @@ async function mint() {
   color: inherit;
   border: 0;
   font: inherit;
-  margin-left: .2rem;
+  padding-left: .3rem;
+  line-height: 2rem;
+  border-radius: 2em 0 0  2em;
 }
 
 .container .mint-btn {
