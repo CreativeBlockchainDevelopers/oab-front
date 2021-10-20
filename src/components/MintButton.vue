@@ -3,13 +3,13 @@ import { computed } from "vue";
 import web3 from '../web3/main';
 
 const selectedAccount = computed(() => web3.selectedAccount.value);
-const canMint = computed(() => selectedAccount.value !== null);
+const canMint = computed(() => selectedAccount.value !== null && !web3.isMinting.value);
 const mintAmount = 1;
 </script>
 
 <template>
   <div className="container">
-    <input className="mint-amount" type="number" v-model="mintAmount">
+    <input className="mint-amount" type="number" min="1" v-model="mintAmount">
     <button @click="web3.mint(mintAmount)" :disabled="!canMint" className="mint-btn">Mint</button>
   </div>
 </template>

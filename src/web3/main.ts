@@ -22,6 +22,7 @@ const web3Modal = new Web3Modal({
 
 let provider: any;
 const selectedAccount = ref<null | string>(null);
+const isMinting = ref(false);
 
 async function connect() {
   try {
@@ -109,6 +110,11 @@ async function fetchAccountData() {
 }
 
 async function mint(amount = 1) {
+  if (isMinting.value) {
+    return;
+  }
+  isMinting.value = true;
+
   const web3 = await fetchAccountData();
   if (web3 === null) {
     return;
@@ -127,8 +133,9 @@ async function mint(amount = 1) {
     const n = BigInt(amount);
     contract.methods.mint(n).send({ value: (n * price).toString() }, (error: any, data: any) => {
       console.log(error, data);
+      isMinting.value = false;
     });
-  })
+  });
 }
 
 export default {
@@ -136,4 +143,5 @@ export default {
   disconnect,
   selectedAccount,
   mint,
+  isMinting,
 }
