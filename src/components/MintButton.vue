@@ -3,25 +3,28 @@ import { computed } from "vue";
 import web3 from '../web3/main';
 
 const selectedAccount = computed(() => web3.selectedAccount.value);
-const canMint = computed(() => selectedAccount.value !== null && !web3.isMinting.value);
+const isConnected = computed(() => selectedAccount.value !== null);
+const canMint = computed(() => isConnected.value && !web3.isMinting.value);
 const mintAmount = 1;
 </script>
 
 <template>
-  <div className="container">
+  <div v-if="isConnected" className="container">
     <input className="mint-amount" type="number" min="1" v-model="mintAmount">
     <button @click="web3.mint(mintAmount)" :disabled="!canMint" className="mint-btn">Mint</button>
+  </div>
+  <div v-else className="container">
+    <button @click="web3.connect()">Connect to mint</button>
   </div>
 </template>
 
 <style scoped>
 .container {
   background: #111;
-  border: 1px solid #333;
+  border: 1px solid #999;
   border-radius: 2em;
   display: inline-flex;
   align-items: center;
-  padding-left: .2rem;
 }
 
 .container .mint-amount {
@@ -34,6 +37,7 @@ const mintAmount = 1;
   color: inherit;
   border: 0;
   font: inherit;
+  margin-left: .2rem;
 }
 
 .container .mint-btn {

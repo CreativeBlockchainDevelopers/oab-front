@@ -8,32 +8,54 @@ const isConnected = computed(() => selectedAccount.value !== null);
 
 <template>
   <div v-if="isConnected" className="container">
+    <span className="account-status"></span>
     <span className="account-name" :title="selectedAccount?.toString()">{{ selectedAccount }}</span>
     <button @click="web3.disconnect()" className="disconnect-btn">Disconnect</button>
   </div>
-  <button v-else @click="web3.connect()">Connect</button>
+  <div v-else className="container">
+    <button @click="web3.connect()">Connect</button>
+  </div>
 </template>
 
 <style scoped>
 .container {
   background: #111;
-  border: 1px solid #333;
+  border: 1px solid #999;
   border-radius: 2em;
   display: flex;
   align-items: center;
-  padding-left: 1rem;
+}
+
+.container .account-status {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin: .1rem 0 .1rem .6rem;
+  background: #5e5;
+  border-radius: 1em;
+  box-shadow: 0 0 .5rem #5e5;
 }
 
 .container .account-name {
   display: inline-block;
-  max-width: 8em;
+  max-width: 10em;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-left: .5rem;
+  margin-right: .5rem;
+  font-family: monospace;
 }
 
 .container .disconnect-btn {
   border-radius: 0 2em 2em 0;
   padding-left: 0.7rem;
+  background: none;
+  color: inherit;
+  border-left: 1px solid #333;
+}
+
+.container .disconnect-btn:hover {
+  color: #e54;
 }
 
 button {
