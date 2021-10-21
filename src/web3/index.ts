@@ -5,6 +5,7 @@ import Web3 from "web3";
 import abi from '../assets/abi.json';
 import { AbiItem } from 'web3-utils';
 import { Contract } from 'web3-eth-contract';
+import api from "./api";
 
 const providerOptions = {
   walletconnect: {
@@ -124,107 +125,41 @@ async function fetchAccountData() {
   contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
   console.log('initialized contract', contract);
 
-  await fetchContractData();
+  await fetchContractData(contract);
 
   return web3;
 }
 
-async function fetchContractData() {
+async function fetchContractData(contract: Contract | null) {
   console.log('fetchContractData');
 
   if (contract === null) {
     return;
   }
 
-  tokenPrice.value = await getPrice();
-  maxTokens.value = await getMaxTokens();
-  totalSupply.value = await getTotalSupply();
-  saleState.value = await getSaleState();
+  tokenPrice.value = await api.getPrice(contract);
+  maxTokens.value = await api.getMaxTokens(contract);
+  totalSupply.value = await api.getTotalSupply(contract);
+  saleState.value = await api.getSaleState(contract);
 }
 
 setInterval(async () => {
-  await fetchContractData();
+  await fetchContractData(contract);
 }, 10_000);
 
-async function getPrice(): Promise<bigint> {
-  return new Promise((resolve, reject) => {
-    if (contract === null) {
-      return reject();
-    }
-    contract.methods.PRICE().call({}, "latest", (error: any, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(BigInt(data));
-    });
-  });
-}
+async function mint(amount = 1) {
+  if (contract === null) {
+    throw new Error();
+  }
 
-async function getMaxTokens(): Promise<number> {
-  return new Promise((resolve, reject) => {
-    if (contract === null) {
-      return reject();
-    }
-    contract.methods.MAX_TOKENS().call({}, "latest", (error: any, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(Number(data));
-    });
-  });
-}
-
-async function getTotalSupply(): Promise<number> {
-  return new Promise((resolve, reject) => {
-    if (contract === null) {
-      return reject();
-    }
-    contract.methods.totalSupply().call({}, "latest", (error: any, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(Number(data));
-    });
-  });
-}
-
-async function getSaleState(): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    if (contract === null) {
-      return reject();
-    }
-    contract.methods.saleIsActive().call({}, "latest", (error: any, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(Boolean(data));
-    });
-  });
-}
-
-async function mint(amount = 1): Promise<string> {
   if (isMinting.value) {
     throw new Error();
   }
   isMinting.value = true;
 
-  await fetchContractData();
-  const n = BigInt(amount);
-  return new Promise((resolve, reject) => {
-    if (contract === null) {
-      return reject();
-    }
-    contract.methods.mint(n).send({
-      from: selectedAccount.value,
-      value: (n * tokenPrice.value).toString(),
-    }, (error: any, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      isMinting.value = false;
-      resolve(data);
-    });
-  });
+  await fetchContractData(contract);
+  const ret = await api.sendMint(contract, tokenPrice.value, amount)
+  isMinting.value = false;
 }
 
 export default {
