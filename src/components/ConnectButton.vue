@@ -2,13 +2,15 @@
 import { computed } from "vue";
 import web3 from '../web3';
 
+const isChainIdValid = computed(() => web3.isChainIdValid.value);
 const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
 </script>
 
 <template>
   <div v-if="isConnected" className="container">
-    <span className="account-status"></span>
+    <span v-if="isChainIdValid" className="account-status" title="Connected"></span>
+    <span v-else className="account-status account-status--invalid" title="You are on the wrong chain"></span>
     <span className="account-name" :title="selectedAccount?.toString()">{{ selectedAccount }}</span>
     <button @click="web3.disconnect()" className="disconnect-btn">Disconnect</button>
   </div>
@@ -34,6 +36,11 @@ const isConnected = computed(() => selectedAccount.value !== null);
   background: #5e5;
   border-radius: 1em;
   box-shadow: 0 0 .5rem #5e5;
+}
+
+.container .account-status.account-status--invalid {
+  background: #ed5;
+  box-shadow: 0 0 .5rem #ed5;
 }
 
 .container .account-name {

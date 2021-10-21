@@ -27,6 +27,7 @@ let provider: any;
 let contract: null | Contract = null;
 let totalSupply = ref(0);
 let maxTokens = ref(0);
+let isChainIdValid = ref(false);
 
 const selectedAccount = ref<null | string>(null);
 const isMinting = ref(false);
@@ -49,21 +50,25 @@ async function connect() {
 
   // Subscribe to accounts change
   provider.on("accountsChanged", (accounts: string[]) => {
+    console.log("accountsChanged");
     fetchAccountData();
   });
 
   // Subscribe to chainId change
   provider.on("chainChanged", (chainId: number) => {
+    console.log("chainChanged");
     fetchAccountData();
   });
 
   // Subscribe to provider connection
   provider.on("connect", (info: { chainId: number }) => {
+    console.log("connect");
     fetchAccountData();
   });
 
   // Subscribe to provider disconnection
   provider.on("disconnect", (error: { code: number; message: string }) => {
+    console.log("disconnect");
     fetchAccountData();
   });
 
@@ -87,6 +92,7 @@ async function disconnect() {
   contract = null;
 
   selectedAccount.value = null;
+  isChainIdValid.value = false;
 }
 
 async function fetchAccountData() {
@@ -96,10 +102,6 @@ async function fetchAccountData() {
   const web3 = new Web3(provider);
 
   console.log("Web3 instance is", web3);
-
-  // Get connected chain id from Ethereum node
-  const chainId = await web3.eth.getChainId();
-  console.log('chainId', chainId);
 
   // Get list of accounts of the connected wallet
   const accounts = await web3.eth.getAccounts();
@@ -111,6 +113,14 @@ async function fetchAccountData() {
     return null;
   }
   selectedAccount.value = accounts[0];
+
+  // Get connected chain id from Ethereum node
+  const chainId = await web3.eth.getChainId();
+  console.log('chainId', chainId);
+  isChainIdValid.value = chainId === 4;
+  if (!isChainIdValid.value) {
+    return web3;
+  }
 
   // Go through all accounts and get their ETH balance
   const rowResolvers = accounts.map(async (address) => {
@@ -211,4 +221,5 @@ export default {
   isMinting,
   totalSupply,
   maxTokens,
+  isChainIdValid,
 }

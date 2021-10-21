@@ -1,15 +1,25 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { ref, computed } from "vue";
 import web3 from '../web3';
 
 const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
-const canMint = computed(() => isConnected.value && !web3.isMinting.value);
-const mintAmount = 1;
+const isChainIdValid = computed(() => web3.isChainIdValid.value);
+const canMint = computed(() => isConnected.value && !web3.isMinting.value && isChainIdValid.value);
+const mintAmount = ref(1);
+const buttonTitle = computed(() => {
+  if (!isConnected.value) {
+    return "You must be connected to mint";
+  } else if (!isChainIdValid.value) {
+    return "You are on the wrong chain";
+  } else {
+    return `Mint ${mintAmount.value} token${mintAmount.value !== 1 ? 's' : ''}`;
+  }
+});
 
 async function mint() {
   try {
-    await web3.mint(mintAmount);
+    await web3.mint(mintAmount.value);
   } catch (error) {
     console.error('error when minting', error);
   }
@@ -19,10 +29,10 @@ async function mint() {
 <template>
   <div v-if="isConnected" className="container">
     <input className="mint-amount" type="number" min="1" :max="web3.maxTokens.value - web3.totalSupply.value" v-model="mintAmount">
-    <button @click="mint()" :disabled="!canMint" className="mint-btn">Mint</button>
+    <button @click="mint()" :disabled="!canMint" className="mint-btn" :title="buttonTitle">Mint</button>
   </div>
   <div v-else className="container">
-    <button @click="web3.connect()">Connect to mint</button>
+    <button @click="web3.connect()" :title="buttonTitle">Connect to mint</button>
   </div>
   <div>
     {{ web3.totalSupply }} / {{ web3.maxTokens }}
