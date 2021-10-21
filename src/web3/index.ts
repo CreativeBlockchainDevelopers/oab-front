@@ -4,7 +4,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
 import abi from '../assets/abi.json';
 import { AbiItem } from 'web3-utils';
-import { Contract } from 'web3-eth-contract';
+import Web3EthContract, { Contract } from 'web3-eth-contract';
 import api from "./api";
 
 const providerOptions = {
@@ -22,6 +22,13 @@ const web3Modal = new Web3Modal({
 });
 
 const contractAddress = "0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2";
+
+// fallback contract
+const fallbackProvider = "wss://rinkeby.infura.io/ws/v3/c14a9e33f3b841cbba4bd1952fbe0e3a";
+// @ts-ignore
+const fallbackContract: Contract = new Web3EthContract(abi as AbiItem[], contractAddress);
+// @ts-ignore
+fallbackContract.setProvider(fallbackProvider);
 
 let provider: any;
 let contract: null | Contract = null;
