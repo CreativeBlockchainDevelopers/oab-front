@@ -28,19 +28,21 @@ async function mint() {
 </script>
 
 <template>
-  <div>
-    Price: {{ Web3Lib.utils.fromWei(web3.tokenPrice.value.toString()) }} ETH
+  <div>Price: {{ Web3Lib.utils.fromWei(web3.tokenPrice.value.toString()) }} ETH</div>
+  <div v-if="isConnected" class="container">
+    <input
+      class="mint-amount"
+      type="number"
+      min="1"
+      :max="web3.maxTokens.value - web3.totalSupply.value"
+      v-model="mintAmount"
+    />
+    <button @click="mint()" :disabled="!canMint" class="mint-btn" :title="buttonTitle">Mint</button>
   </div>
-  <div v-if="isConnected" className="container">
-    <input className="mint-amount" type="number" min="1" :max="web3.maxTokens.value - web3.totalSupply.value" v-model="mintAmount">
-    <button @click="mint()" :disabled="!canMint" className="mint-btn" :title="buttonTitle">Mint</button>
-  </div>
-  <div v-else className="container">
+  <div v-else class="container">
     <button @click="web3.connect()" :title="buttonTitle">Connect to mint</button>
   </div>
-  <div>
-    {{ web3.totalSupply }} / {{ web3.maxTokens }}
-  </div>
+  <div>{{ web3.totalSupply }} / {{ web3.maxTokens }}</div>
 </template>
 
 <style scoped>
@@ -62,9 +64,9 @@ async function mint() {
   color: inherit;
   border: 0;
   font: inherit;
-  padding-left: .3rem;
+  padding-left: 0.3rem;
   line-height: 2rem;
-  border-radius: 2em 0 0  2em;
+  border-radius: 2em 0 0 2em;
 }
 
 .container .mint-btn {

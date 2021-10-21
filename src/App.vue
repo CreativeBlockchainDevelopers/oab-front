@@ -13,21 +13,19 @@ export default {
 </script>
 
 <template>
-  <div className="wrapper">
+  <div class="wrapper">
     <header>
       <a href="#">
         <h1>open art blocks</h1>
       </a>
       <ConnectButton />
     </header>
-    <div className="content">
+    <div class="content">
       <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae dignissimos dolor, recusandae sint aut praesentium iste fuga dolore officiis quis incidunt illum. Modi dicta explicabo reprehenderit earum similique quia eos.</p>
       <p>
         <MintButton />
       </p>
-      <p>
-        Sale is active: {{ web3.saleState.value }}
-      </p>
+      <p>Sale is active: {{ web3.saleState.value }}</p>
     </div>
     <footer>open art blocks</footer>
   </div>

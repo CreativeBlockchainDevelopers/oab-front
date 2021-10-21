@@ -8,13 +8,13 @@ const isConnected = computed(() => selectedAccount.value !== null);
 </script>
 
 <template>
-  <div v-if="isConnected" className="container">
-    <span v-if="isChainIdValid" className="account-status" title="Connected"></span>
-    <span v-else className="account-status account-status--invalid" title="You are on the wrong chain"></span>
-    <span className="account-name" :title="selectedAccount?.toString()">{{ selectedAccount }}</span>
-    <button @click="web3.disconnect()" className="disconnect-btn">Disconnect</button>
+  <div v-if="isConnected" class="container">
+    <span v-if="isChainIdValid" class="account-status" title="Connected"></span>
+    <span v-else class="account-status account-status--invalid" title="You are on the wrong chain"></span>
+    <span class="account-name" :title="selectedAccount?.toString()">{{ selectedAccount }}</span>
+    <button @click="web3.disconnect()" class="disconnect-btn">Disconnect</button>
   </div>
-  <div v-else className="container">
+  <div v-else class="container">
     <button @click="web3.connect()">Connect</button>
   </div>
 </template>
@@ -32,15 +32,15 @@ const isConnected = computed(() => selectedAccount.value !== null);
   display: inline-block;
   width: 1em;
   height: 1em;
-  margin: .1rem 0 .1rem .6rem;
+  margin: 0.1rem 0 0.1rem 0.6rem;
   background: #5e5;
   border-radius: 1em;
-  box-shadow: 0 0 .5rem #5e5;
+  box-shadow: 0 0 0.5rem #5e5;
 }
 
 .container .account-status.account-status--invalid {
   background: #ed5;
-  box-shadow: 0 0 .5rem #ed5;
+  box-shadow: 0 0 0.5rem #ed5;
 }
 
 .container .account-name {
@@ -48,8 +48,8 @@ const isConnected = computed(() => selectedAccount.value !== null);
   max-width: 10em;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-left: .5rem;
-  margin-right: .5rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   font-family: monospace;
 }
 
