@@ -78,6 +78,10 @@ async function disconnect() {
   } else if (provider?.close) {
     await provider.close();
   }
+
+  // Unsubscribe from events
+  provider.removeAllListeners();
+
   web3Modal.clearCachedProvider();
   provider = null;
   contract = null;
