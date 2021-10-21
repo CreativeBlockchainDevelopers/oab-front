@@ -27,7 +27,7 @@ let provider: any;
 let contract: null | Contract = null;
 const totalSupply = ref(0);
 const maxTokens = ref(0);
-const tokenPrice = ref(0n);
+const tokenPrice = ref(BigInt(0));
 const isChainIdValid = ref(false);
 const saleState = ref(false);
 
