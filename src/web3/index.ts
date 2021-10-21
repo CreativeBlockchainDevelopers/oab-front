@@ -137,11 +137,25 @@ async function fetchAccountData() {
   contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
   console.log('initialized contract', contract);
 
-  maxTokens.value = await getMaxTokens();
-  totalSupply.value = await getTotalSupply();
+  await fetchContractData();
 
   return web3;
 }
+
+async function fetchContractData() {
+  console.log('fetchContractData');
+
+  if (contract === null) {
+    return;
+  }
+
+  maxTokens.value = await getMaxTokens();
+  totalSupply.value = await getTotalSupply();
+}
+
+setInterval(async () => {
+  await fetchContractData();
+}, 10_000);
 
 async function getPrice(): Promise<bigint> {
   return new Promise((resolve, reject) => {
