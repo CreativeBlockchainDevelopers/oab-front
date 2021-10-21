@@ -78,9 +78,7 @@ async function connect() {
 async function disconnect() {
   console.log("Killing the wallet connection", provider);
 
-  if (provider?.disconnect) {
-    await provider.disconnect();
-  } else if (provider?.close) {
+  if (provider?.close) {
     await provider.close();
   }
 
