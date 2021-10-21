@@ -28,6 +28,7 @@ const totalSupply = ref(0);
 const maxTokens = ref(0);
 const tokenPrice = ref(0n);
 const isChainIdValid = ref(false);
+const saleState = ref(false);
 
 const selectedAccount = ref<null | string>(null);
 const isMinting = ref(false);
@@ -138,6 +139,7 @@ async function fetchContractData() {
   tokenPrice.value = await getPrice();
   maxTokens.value = await getMaxTokens();
   totalSupply.value = await getTotalSupply();
+  saleState.value = await getSaleState();
 }
 
 setInterval(async () => {
@@ -186,6 +188,20 @@ async function getTotalSupply(): Promise<number> {
   });
 }
 
+async function getSaleState(): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    if (contract === null) {
+      return reject();
+    }
+    contract.methods.saleIsActive().call({}, "latest", (error: any, data: string) => {
+      if (error) {
+        reject(error);
+      }
+      resolve(Boolean(data));
+    });
+  });
+}
+
 async function mint(amount = 1): Promise<string> {
   if (isMinting.value) {
     throw new Error();
@@ -222,4 +238,5 @@ export default {
   maxTokens,
   isChainIdValid,
   tokenPrice,
+  saleState,
 }
