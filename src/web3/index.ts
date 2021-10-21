@@ -16,18 +16,18 @@ const providerOptions = {
 };
 
 const web3Modal = new Web3Modal({
-  network: "rinkeby", // optional
-  cacheProvider: true, // optional
-  providerOptions // required
+  cacheProvider: true,
+  providerOptions,
 });
 
 const contractAddress = "0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2";
 
 let provider: any;
 let contract: null | Contract = null;
-let totalSupply = ref(0);
-let maxTokens = ref(0);
-let isChainIdValid = ref(false);
+const totalSupply = ref(0);
+const maxTokens = ref(0);
+const tokenPrice = ref(0n);
+const isChainIdValid = ref(false);
 
 const selectedAccount = ref<null | string>(null);
 const isMinting = ref(false);
@@ -135,6 +135,7 @@ async function fetchContractData() {
     return;
   }
 
+  tokenPrice.value = await getPrice();
   maxTokens.value = await getMaxTokens();
   totalSupply.value = await getTotalSupply();
 }
@@ -191,7 +192,7 @@ async function mint(amount = 1): Promise<string> {
   }
   isMinting.value = true;
 
-  const price = await getPrice();
+  await fetchContractData();
   const n = BigInt(amount);
   return new Promise((resolve, reject) => {
     if (contract === null) {
@@ -199,7 +200,7 @@ async function mint(amount = 1): Promise<string> {
     }
     contract.methods.mint(n).send({
       from: selectedAccount.value,
-      value: (n * price).toString(),
+      value: (n * tokenPrice.value).toString(),
     }, (error: any, data: string) => {
       if (error) {
         reject(error);
@@ -220,4 +221,5 @@ export default {
   totalSupply,
   maxTokens,
   isChainIdValid,
+  tokenPrice,
 }

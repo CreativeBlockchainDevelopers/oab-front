@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import web3 from '../web3';
+import Web3Lib from "web3";
 
 const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
@@ -27,6 +28,9 @@ async function mint() {
 </script>
 
 <template>
+  <div>
+    Price: {{ Web3Lib.utils.fromWei(web3.tokenPrice.value.toString()) }} ETH
+  </div>
   <div v-if="isConnected" className="container">
     <input className="mint-amount" type="number" min="1" :max="web3.maxTokens.value - web3.totalSupply.value" v-model="mintAmount">
     <button @click="mint()" :disabled="!canMint" className="mint-btn" :title="buttonTitle">Mint</button>
