@@ -73,7 +73,9 @@ async function connect() {
 async function disconnect() {
   console.log("Killing the wallet connection", provider);
 
-  if (provider && provider.close) {
+  if (provider?.disconnect) {
+    await provider.disconnect();
+  } else if (provider?.close) {
     await provider.close();
   }
   web3Modal.clearCachedProvider();
