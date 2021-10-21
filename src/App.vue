@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import ConnectButton from './components/ConnectButton.vue'
 import MintButton from './components/MintButton.vue'
+import web3 from './web3';
+</script>
+
+<script lang="ts">
+export default {
+  async mounted() {
+    await web3.tryAutoConnect();
+  },
+}
 </script>
 
 <template>

@@ -31,6 +31,12 @@ let maxTokens = ref(0);
 const selectedAccount = ref<null | string>(null);
 const isMinting = ref(false);
 
+async function tryAutoConnect() {
+  if (web3Modal.cachedProvider) {
+    await connect();
+  }
+}
+
 async function connect() {
   try {
     provider = await web3Modal.connect();
@@ -192,6 +198,7 @@ async function mint(amount = 1): Promise<string> {
 
 export default {
   connect,
+  tryAutoConnect,
   disconnect,
   selectedAccount,
   mint,
