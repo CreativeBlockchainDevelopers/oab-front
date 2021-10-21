@@ -44,6 +44,8 @@ const isMinting = ref(false);
 async function tryAutoConnect() {
   if (web3Modal.cachedProvider) {
     await connect();
+  } else {
+    await fetchContractData();
   }
 }
 
@@ -132,26 +134,29 @@ async function fetchAccountData() {
   contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
   console.log('initialized contract', contract);
 
-  await fetchContractData(contract);
+  await fetchContractData();
 
   return web3;
 }
 
-async function fetchContractData(contract: Contract | null) {
+async function fetchContractData() {
   console.log('fetchContractData');
 
-  if (contract === null) {
-    return;
+  let availableContract = fallbackContract;
+  if (contract !== null) {
+    availableContract = contract;
   }
 
-  tokenPrice.value = await api.getPrice(contract);
-  maxTokens.value = await api.getMaxTokens(contract);
-  totalSupply.value = await api.getTotalSupply(contract);
-  saleState.value = await api.getSaleState(contract);
+  tokenPrice.value = await api.getPrice(availableContract);
+  maxTokens.value = await api.getMaxTokens(availableContract);
+  totalSupply.value = await api.getTotalSupply(availableContract);
+  saleState.value = await api.getSaleState(availableContract);
 }
 
 setInterval(async () => {
-  await fetchContractData(contract);
+  if (contract !== null) {
+    await fetchContractData();
+  }
 }, 10_000);
 
 async function mint(amount = 1) {
@@ -164,7 +169,7 @@ async function mint(amount = 1) {
   }
   isMinting.value = true;
 
-  await fetchContractData(contract);
+  await fetchContractData();
   const ret = await api.sendMint(contract, tokenPrice.value, amount)
   isMinting.value = false;
 }
