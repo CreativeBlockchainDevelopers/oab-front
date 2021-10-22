@@ -43,50 +43,50 @@ const isConnected = computed(() => selectedAccount.value !== null);
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .container {
   background: #111;
   border: 1px solid #999;
   border-radius: 2em;
   display: flex;
   align-items: center;
-}
 
-.container .account-status {
-  display: inline-block;
-  width: 1em;
-  height: 1em;
-  margin: 0.1rem 0 0.1rem 0.6rem;
-  background: #5e5;
-  border-radius: 1em;
-  box-shadow: 0 0 0.5rem #5e5;
-}
+  .account-status {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin: 0.1rem 0 0.1rem 0.6rem;
+    background: #5e5;
+    border-radius: 1em;
+    box-shadow: 0 0 0.5rem #5e5;
 
-.container .account-status.account-status--invalid {
-  background: #ed5;
-  box-shadow: 0 0 0.5rem #ed5;
-}
+    &--invalid {
+      background: #ed5;
+      box-shadow: 0 0 0.5rem #ed5;
+    }
+  }
 
-.container .account-name {
-  display: inline-block;
-  max-width: 10em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-left: 0.5rem;
-  margin-right: 0.5rem;
-  font-family: monospace;
-}
+  .account-name {
+    display: inline-block;
+    max-width: 10em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-left: 0.5rem;
+    margin-right: 0.5rem;
+    font-family: monospace;
+  }
 
-.container .disconnect-btn {
-  border-radius: 0 2em 2em 0;
-  padding-left: 0.7rem;
-  background: none;
-  color: inherit;
-  border-left: 1px solid #333;
-}
+  .disconnect-btn {
+    border-radius: 0 2em 2em 0;
+    padding-left: 0.7rem;
+    background: none;
+    color: inherit;
+    border-left: 1px solid #333;
 
-.container .disconnect-btn:hover {
-  color: #e54;
+    &:hover {
+      color: #e54;
+    }
+  }
 }
 
 button {
@@ -98,10 +98,10 @@ button {
   font-weight: 500;
   letter-spacing: 0.05rem;
   transition: all 0.3s;
-}
 
-button:hover {
-  cursor: pointer;
-  background: #ccc;
+  &:hover {
+    cursor: pointer;
+    background: #ccc;
+  }
 }
 </style>

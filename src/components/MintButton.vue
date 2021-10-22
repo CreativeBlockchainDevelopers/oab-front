@@ -62,33 +62,33 @@ async function mint() {
   <div>{{ web3.totalSupply }} / {{ web3.maxTokens }}</div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .container {
   background: #111;
   border: 1px solid #999;
   border-radius: 2em;
   display: inline-flex;
   align-items: center;
-}
 
-.container .mint-amount {
-  display: inline-block;
-  width: 3em;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: center;
-  background: none;
-  color: inherit;
-  border: 0;
-  font: inherit;
-  padding-left: 0.3rem;
-  line-height: 2rem;
-  border-radius: 2em 0 0 2em;
-}
+  .mint-amount {
+    display: inline-block;
+    width: 3em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    background: none;
+    color: inherit;
+    border: 0;
+    font: inherit;
+    padding-left: 0.3rem;
+    line-height: 2rem;
+    border-radius: 2em 0 0 2em;
+  }
 
-.container .mint-btn {
-  border-radius: 0 2em 2em 0;
-  padding-left: 0.7rem;
+  .mint-btn {
+    border-radius: 0 2em 2em 0;
+    padding-left: 0.7rem;
+  }
 }
 
 button {
@@ -100,16 +100,16 @@ button {
   font-weight: 500;
   letter-spacing: 0.05rem;
   transition: all 0.3s;
-}
 
-button:hover {
-  cursor: pointer;
-  background: #ccc;
-}
+  &:hover {
+    cursor: pointer;
+    background: #ccc;
+  }
 
-button:disabled {
-  cursor: inherit;
-  background: #999;
-  color: #666;
+  &:disabled {
+    cursor: inherit;
+    background: #999;
+    color: #666;
+  }
 }
 </style>

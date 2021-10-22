@@ -35,7 +35,7 @@ export default {
   </div>
 </template>
 
-<style>
+<style lang="scss">
 body {
   font-family: sans-serif;
   padding: 0;
@@ -47,7 +47,7 @@ body {
 }
 </style>
 
-<style scoped>
+<style lang="scss" scoped>
 header {
   display: flex;
   justify-content: space-between;
@@ -55,16 +55,16 @@ header {
   background: #222;
   color: #ddd;
   padding: 1rem;
-}
 
-header > a {
-  color: inherit;
-  text-decoration: none;
-}
+  > a {
+    color: inherit;
+    text-decoration: none;
+  }
 
-header h1 {
-  margin: 0;
-  font-weight: 300;
+  h1 {
+    margin: 0;
+    font-weight: 300;
+  }
 }
 
 .wrapper {
