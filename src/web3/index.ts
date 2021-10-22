@@ -131,7 +131,9 @@ async function fetchAccountData() {
     return web3;
   }
 
-  contract = new web3.eth.Contract(abi as AbiItem[], contractAddress);
+  contract = new web3.eth.Contract(abi as AbiItem[], contractAddress, {
+    from: selectedAccount.value,
+  });
   console.log('initialized contract', contract);
 
   await fetchContractData();
