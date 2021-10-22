@@ -167,8 +167,11 @@ async function mint(amount = 1): Promise<void> {
   isMinting.value = true;
 
   await fetchContractData();
-  await api.sendMint(contract, tokenPrice.value, amount);
-  isMinting.value = false;
+  try {
+    await api.sendMint(contract, tokenPrice.value, amount);
+  } finally {
+    isMinting.value = false;
+  }
 }
 
 async function tryAutoConnect(): Promise<void> {

@@ -1,10 +1,21 @@
 <script setup lang="ts">
+import { notify } from '@kyvg/vue3-notification';
 import { computed } from 'vue';
 import web3 from '../web3';
 
 const isChainIdValid = computed(() => web3.isChainIdValid.value);
 const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
+
+async function connect() {
+  await web3.connect();
+  notify('Connected');
+}
+
+async function disconnect() {
+  await web3.disconnect();
+  notify('Disconnected');
+}
 </script>
 
 <template>
@@ -28,7 +39,7 @@ const isConnected = computed(() => selectedAccount.value !== null);
     >{{ selectedAccount }}</span>
     <button
       class="disconnect-btn"
-      @click="web3.disconnect()"
+      @click="disconnect()"
     >
       Disconnect
     </button>
@@ -37,7 +48,7 @@ const isConnected = computed(() => selectedAccount.value !== null);
     v-else
     class="container"
   >
-    <button @click="web3.connect()">
+    <button @click="connect()">
       Connect
     </button>
   </div>

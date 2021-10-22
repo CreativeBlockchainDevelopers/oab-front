@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { notify } from '@kyvg/vue3-notification';
 import { ref, computed } from 'vue';
 import Web3Lib from 'web3';
 import web3 from '../web3';
@@ -20,8 +21,10 @@ const buttonTitle = computed(() => {
 async function mint() {
   try {
     await web3.mint(mintAmount.value);
+    notify('Minted successfully');
   } catch (error) {
     console.error('error when minting', error);
+    notify({ text: 'Error when minting', type: 'error' });
   }
 }
 </script>

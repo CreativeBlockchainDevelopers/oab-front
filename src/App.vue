@@ -32,6 +32,7 @@ export default {
       <p>Sale is active: {{ web3.saleState.value }}</p>
     </div>
     <footer>open art blocks</footer>
+    <notifications position="bottom right" />
   </div>
 </template>
 
