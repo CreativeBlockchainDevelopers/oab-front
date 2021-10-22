@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed } from 'vue';
+import Web3Lib from 'web3';
 import web3 from '../web3';
-import Web3Lib from "web3";
 
 const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
@@ -10,12 +10,11 @@ const canMint = computed(() => isConnected.value && !web3.isMinting.value && isC
 const mintAmount = ref(1);
 const buttonTitle = computed(() => {
   if (!isConnected.value) {
-    return "You must be connected to mint";
-  } else if (!isChainIdValid.value) {
-    return "You are on the wrong chain";
-  } else {
-    return `Mint ${mintAmount.value} token${mintAmount.value !== 1 ? 's' : ''}`;
+    return 'You must be connected to mint';
+  } if (!isChainIdValid.value) {
+    return 'You are on the wrong chain';
   }
+  return `Mint ${mintAmount.value} token${mintAmount.value !== 1 ? 's' : ''}`;
 });
 
 async function mint() {
@@ -29,18 +28,36 @@ async function mint() {
 
 <template>
   <div>Price: {{ Web3Lib.utils.fromWei(web3.tokenPrice.value.toString()) }} ETH</div>
-  <div v-if="isConnected" class="container">
+  <div
+    v-if="isConnected"
+    class="container"
+  >
     <input
+      v-model="mintAmount"
       class="mint-amount"
       type="number"
       min="1"
       :max="web3.maxTokens.value - web3.totalSupply.value"
-      v-model="mintAmount"
-    />
-    <button @click="mint()" :disabled="!canMint" class="mint-btn" :title="buttonTitle">Mint</button>
+    >
+    <button
+      :disabled="!canMint"
+      class="mint-btn"
+      :title="buttonTitle"
+      @click="mint()"
+    >
+      Mint
+    </button>
   </div>
-  <div v-else class="container">
-    <button @click="web3.connect()" :title="buttonTitle">Connect to mint</button>
+  <div
+    v-else
+    class="container"
+  >
+    <button
+      :title="buttonTitle"
+      @click="web3.connect()"
+    >
+      Connect to mint
+    </button>
   </div>
   <div>{{ web3.totalSupply }} / {{ web3.maxTokens }}</div>
 </template>

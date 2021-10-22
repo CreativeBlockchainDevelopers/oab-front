@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import ConnectButton from './components/ConnectButton.vue'
-import MintButton from './components/MintButton.vue'
+import ConnectButton from './components/ConnectButton.vue';
+import MintButton from './components/MintButton.vue';
 import web3 from './web3';
 </script>
 
 <script lang="ts">
 export default {
-  async mounted() {
+  async mounted(): Promise<void> {
     await web3.tryAutoConnect();
   },
-}
+};
 </script>
 
 <template>
@@ -21,7 +21,11 @@ export default {
       <ConnectButton />
     </header>
     <div class="content">
-      <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Quae dignissimos dolor, recusandae sint aut praesentium iste fuga dolore officiis quis incidunt illum. Modi dicta explicabo reprehenderit earum similique quia eos.</p>
+      <p>
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit.  Quae dignissimos dolor,
+        recusandae sint aut praesentium iste fuga dolore officiis quis incidunt illum. Modi dicta
+        explicabo reprehenderit earum similique quia eos.
+      </p>
       <p>
         <MintButton />
       </p>

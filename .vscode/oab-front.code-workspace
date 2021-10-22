@@ -9,5 +9,6 @@
       "node_modules/": true,
       ".vscode/": true,
     },
+    "typescript.tsdk": "node_modules/typescript/lib",
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue';
 import web3 from '../web3';
 
 const isChainIdValid = computed(() => web3.isChainIdValid.value);
@@ -8,14 +8,38 @@ const isConnected = computed(() => selectedAccount.value !== null);
 </script>
 
 <template>
-  <div v-if="isConnected" class="container">
-    <span v-if="isChainIdValid" class="account-status" title="Connected"></span>
-    <span v-else class="account-status account-status--invalid" title="You are on the wrong chain"></span>
-    <span class="account-name" :title="selectedAccount?.toString()">{{ selectedAccount }}</span>
-    <button @click="web3.disconnect()" class="disconnect-btn">Disconnect</button>
+  <div
+    v-if="isConnected"
+    class="container"
+  >
+    <span
+      v-if="isChainIdValid"
+      class="account-status"
+      title="Connected"
+    />
+    <span
+      v-else
+      class="account-status account-status--invalid"
+      title="You are on the wrong chain"
+    />
+    <span
+      class="account-name"
+      :title="selectedAccount?.toString()"
+    >{{ selectedAccount }}</span>
+    <button
+      class="disconnect-btn"
+      @click="web3.disconnect()"
+    >
+      Disconnect
+    </button>
   </div>
-  <div v-else class="container">
-    <button @click="web3.connect()">Connect</button>
+  <div
+    v-else
+    class="container"
+  >
+    <button @click="web3.connect()">
+      Connect
+    </button>
   </div>
 </template>
 
