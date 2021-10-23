@@ -20,10 +20,11 @@ const buttonTitle = computed(() => {
 
 async function mint() {
   try {
-    await web3.mint(mintAmount.value);
-    notify({ text: 'Minted successfully', type: 'success' });
+    const amount = mintAmount.value;
+    await web3.mint(amount);
+    notify({ text: `${amount} token${amount !== 1 ? 's' : ''} minted successfully`, type: 'success' });
   } catch (error) {
-    console.error('error when minting', error);
+    console.error(error);
     notify({ title: 'Minting error', text: error.message, type: 'error' });
   }
 }
