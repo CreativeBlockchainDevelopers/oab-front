@@ -1,7 +1,7 @@
 <template>
   <notifications
     position="bottom right"
-    speed="150"
+    :speed="150"
     classes="notifications"
   />
 </template>

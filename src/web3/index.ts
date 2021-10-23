@@ -4,6 +4,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import Web3EthContract, { Contract } from 'web3-eth-contract';
+import { notify } from '@kyvg/vue3-notification';
 import abi from '../assets/abi.json';
 import api from './api';
 
@@ -100,6 +101,11 @@ async function fetchAccountData() {
   console.log('chainId', chainId);
   isChainIdValid.value = chainId === 4;
   if (!isChainIdValid.value) {
+    notify({
+      title: 'Wrong network',
+      text: 'You are on the wrong chain.<br>Please change to Mainnet.',
+      type: 'warn',
+    });
     return web3;
   }
 
