@@ -8,13 +8,20 @@ const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
 
 async function connect() {
-  await web3.connect();
-  notify('Connected');
+  try {
+    await web3.connect();
+    notify({ text: 'Connected', type: 'success' });
+  } catch (error: Error) {
+    if (error.message !== 'Modal closed by user' && error.message !== 'Undefined provider') {
+      notify({ title: 'Connection error', text: error.message, type: 'error' });
+      console.error(error);
+    }
+  }
 }
 
 async function disconnect() {
   await web3.disconnect();
-  notify('Disconnected');
+  notify({ text: 'Disconnected', type: 'info' });
 }
 </script>
 

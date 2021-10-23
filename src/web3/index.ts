@@ -52,7 +52,7 @@ async function disconnect(): Promise<void> {
   }
 
   // Unsubscribe from events
-  provider.removeAllListeners();
+  provider?.removeAllListeners();
 
   web3Modal.clearCachedProvider();
   provider = null;
@@ -108,17 +108,29 @@ async function fetchAccountData() {
   });
   console.log('initialized contract', contract);
 
-  await fetchContractData();
+  fetchContractData();
 
   return web3;
 }
 
 async function connect(): Promise<void> {
   try {
+    if (provider) {
+      await disconnect();
+    }
     provider = await web3Modal.connect();
-  } catch (e) {
-    console.log('Could not get a wallet connection', e);
-    return;
+  } catch (error) {
+    if (error !== undefined) {
+      if (typeof error === 'string') {
+        throw new Error(error);
+      } else {
+        throw error;
+      }
+    } else if (!provider) {
+      throw new Error('Undefined provider');
+    } else {
+      throw new Error('Unknown error');
+    }
   }
 
   console.log('provider', provider);
