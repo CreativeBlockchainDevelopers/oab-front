@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ConnectButton from './components/ConnectButton.vue';
 import MintButton from './components/MintButton.vue';
+import NotificationPanel from './components/NotificationPanel.vue';
 import web3 from './web3';
 </script>
 
@@ -32,7 +33,7 @@ export default {
       <p>Sale is active: {{ web3.saleState.value }}</p>
     </div>
     <footer>open art blocks</footer>
-    <notifications position="bottom right" />
+    <NotificationPanel />
   </div>
 </template>
 
