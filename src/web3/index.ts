@@ -22,10 +22,11 @@ const web3Modal = new Web3Modal({
   providerOptions,
 });
 
-const contractAddress = '0x613b697182BfDD90Ce90d3dFb9113501aCD7fBA2';
+// env variables
+const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+const fallbackProvider = import.meta.env.VITE_FALLBACK_PROVIDER;
+const contractChainId = Number.parseInt(import.meta.env.VITE_CONTRACT_CHAIN_ID, 10);
 
-// fallback contract
-const fallbackProvider = 'wss://rinkeby.infura.io/ws/v3/c14a9e33f3b841cbba4bd1952fbe0e3a';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const fallbackContract: Contract = new Web3EthContract(abi as AbiItem[], contractAddress);
@@ -99,7 +100,7 @@ async function fetchAccountData() {
   // Get connected chain id from Ethereum node
   const chainId = await web3.eth.getChainId();
   console.log('chainId', chainId);
-  isChainIdValid.value = chainId === 4;
+  isChainIdValid.value = chainId === contractChainId;
   if (!isChainIdValid.value) {
     notify({
       title: 'Wrong network',
