@@ -63,8 +63,9 @@ async function disconnect() {
 
 <style lang="scss" scoped>
 .container {
-  background: #111;
-  border-radius: 2em;
+  background: #eee;
+  border: 1px solid #999;
+  border-radius: 4px;
   display: flex;
   align-items: center;
 
@@ -74,12 +75,10 @@ async function disconnect() {
     height: 1em;
     margin: 0.1rem 0 0.1rem 0.6rem;
     background: #5e5;
-    border-radius: 1em;
-    box-shadow: 0 0 0.5rem #5e5;
+    border-radius: 2px;
 
     &--invalid {
       background: #ed5;
-      box-shadow: 0 0 0.5rem #ed5;
     }
   }
 
@@ -94,11 +93,9 @@ async function disconnect() {
   }
 
   .disconnect-btn {
-    border-radius: 0 2em 2em 0;
     padding-left: 0.7rem;
-    background: none;
-    color: inherit;
-    border-left: 1px solid #222;
+    border-left: 1px solid #ccc;
+    border-radius: 0 3px 3px 0;
 
     &:hover {
       color: #e54;
@@ -109,7 +106,7 @@ async function disconnect() {
 button {
   background: #ddd;
   border: 0;
-  border-radius: 2em;
+  border-radius: 3px;
   padding: 0.5rem 1rem;
   text-transform: uppercase;
   font-weight: 500;

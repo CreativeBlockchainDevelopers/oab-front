@@ -73,8 +73,8 @@ async function mint() {
 
 <style lang="scss" scoped>
 .container {
-  font-size: 1.5rem;
-  color: #111;
+  background: #eee;
+  border: 1px solid #999;
   border-radius: 4px;
   display: inline-flex;
   align-items: stretch;
@@ -89,11 +89,13 @@ async function mint() {
     color: inherit;
     border: 0;
     font: inherit;
-    border-radius: 4px 0 0 4px;
+    padding-left: 0.3rem;
+    line-height: 2rem;
+    border-radius: 3px 0 0 3px;
   }
 
   .mint-btn {
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 3px 3px 0;
   }
 }
 
@@ -101,8 +103,8 @@ button {
   background: #08f;
   color: #eee;
   border: 0;
-  border-radius: 4px;
-  padding: 0.5em 1em;
+  border-radius: 3px;
+  padding: 0.5rem 1rem;
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 0.05em;

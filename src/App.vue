@@ -49,7 +49,7 @@ body {
 }
 
 #app {
-  color: #ccc;
+  color: #333;
 }
 </style>
 
@@ -58,8 +58,8 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #222;
-  color: #ddd;
+  background: #ddd;
+  color: #333;
   padding: 1rem;
 
   > a {
@@ -69,8 +69,6 @@ header {
 
   h1 {
     margin: 0;
-    font-weight: 300;
-    text-transform: lowercase;
   }
 }
 
@@ -78,7 +76,7 @@ header {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: #111;
+  background: #eee;
 }
 
 .content {
@@ -89,8 +87,8 @@ header {
 }
 
 footer {
-  background: #222;
-  color: #ddd;
+  background: #ddd;
+  color: #333;
   padding: 1rem;
 }
 </style>
