@@ -7,6 +7,7 @@ import Web3EthContract, { Contract } from 'web3-eth-contract';
 import { notify } from '@kyvg/vue3-notification';
 import abi from '../assets/abi.json';
 import api from './api';
+import { chains } from './chains';
 
 const providerOptions = {
   walletconnect: {
@@ -26,6 +27,7 @@ const web3Modal = new Web3Modal({
 const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
 const fallbackProvider = import.meta.env.VITE_FALLBACK_PROVIDER;
 const contractChainId = Number.parseInt(import.meta.env.VITE_CONTRACT_CHAIN_ID, 10);
+const contractChainName = chains.find((chain) => chain.chainId === contractChainId)?.name ?? 'Unknown chain';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -104,7 +106,7 @@ async function fetchAccountData() {
   if (!isChainIdValid.value) {
     notify({
       title: 'Wrong network',
-      text: 'You are on the wrong chain.<br>Please change to Mainnet.',
+      text: `You are on the wrong chain.<br>Please change to ${contractChainName}.`,
       type: 'warn',
     });
     return web3;
