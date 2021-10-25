@@ -24,9 +24,9 @@ const web3Modal = new Web3Modal({
 });
 
 // env variables
-const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
+const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS as string;
 const fallbackProvider = import.meta.env.VITE_FALLBACK_PROVIDER;
-const contractChainId = Number.parseInt(import.meta.env.VITE_CONTRACT_CHAIN_ID, 10);
+const contractChainId = Number.parseInt(import.meta.env.VITE_CONTRACT_CHAIN_ID as string, 10);
 const contractChainName = chains.find((chain) => chain.chainId === contractChainId)?.name ?? 'Unknown chain';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

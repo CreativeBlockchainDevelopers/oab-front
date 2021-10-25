@@ -11,9 +11,9 @@ async function connect() {
   try {
     await web3.connect();
     notify({ text: 'Connected', type: 'success' });
-  } catch (error: Error) {
-    if (error.message !== 'Modal closed by user' && error.message !== 'Undefined provider') {
-      notify({ title: 'Connection error', text: error.message, type: 'error' });
+  } catch (error: any) {
+    if (error?.message !== 'Modal closed by user' && error?.message !== 'Undefined provider') {
+      notify({ title: 'Connection error', text: error?.message ?? `${error}`, type: 'error' });
       console.error(error);
     }
   }

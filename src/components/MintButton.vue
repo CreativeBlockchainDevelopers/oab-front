@@ -24,9 +24,9 @@ async function mint() {
     const amount = mintAmount.value;
     await web3.mint(amount);
     notify({ text: `${amount} token${amount !== 1 ? 's' : ''} minted successfully`, type: 'success' });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    notify({ title: 'Minting error', text: error.message, type: 'error' });
+    notify({ title: 'Minting error', text: error?.message ?? `${error}`, type: 'error' });
   }
 }
 </script>
