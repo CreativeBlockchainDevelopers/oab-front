@@ -4,6 +4,7 @@ import { ref, computed } from 'vue';
 import Web3Lib from 'web3';
 import web3 from '../web3';
 
+const currencySymbol = computed(() => web3.currencySymbol());
 const selectedAccount = computed(() => web3.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
 const isChainIdValid = computed(() => web3.isChainIdValid.value);
@@ -31,7 +32,9 @@ async function mint() {
 </script>
 
 <template>
-  <div>Price: {{ Web3Lib.utils.fromWei(web3.tokenPrice.value.toString()) }} ETH</div>
+  <div>
+    Price: {{ Web3Lib.utils.fromWei(web3.tokenPrice.value.toString()) }} {{ currencySymbol }}
+  </div>
   <div
     v-if="isConnected"
     class="container"

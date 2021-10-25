@@ -203,6 +203,10 @@ async function tryAutoConnect(): Promise<void> {
   }
 }
 
+function currencySymbol(): string {
+  return chains.find((chain) => chain.chainId === contractChainId)?.nativeCurrency.symbol ?? '???';
+}
+
 export default {
   connect,
   tryAutoConnect,
@@ -215,4 +219,5 @@ export default {
   isChainIdValid,
   tokenPrice,
   saleState,
+  currencySymbol,
 };
