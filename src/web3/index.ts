@@ -9,6 +9,10 @@ import abi from '../assets/abi.json';
 import api from './api';
 import { chains } from './chains';
 
+enum NotificationId {
+  WRONG_CHAIN = -1000,
+}
+
 const providerOptions = {
   walletconnect: {
     package: WalletConnectProvider,
@@ -103,11 +107,14 @@ async function fetchAccountData() {
   const chainId = await web3.eth.getChainId();
   console.log('chainId', chainId);
   isChainIdValid.value = chainId === contractChainId;
+  notify.close(NotificationId.WRONG_CHAIN);
   if (!isChainIdValid.value) {
     notify({
+      id: NotificationId.WRONG_CHAIN,
       title: 'Wrong network',
       text: `You are on the wrong chain.<br>Please change to ${contractChainName}.`,
       type: 'warn',
+      duration: -1,
     });
     return web3;
   }
