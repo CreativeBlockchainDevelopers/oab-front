@@ -64,7 +64,6 @@ async function disconnect() {
 <style lang="scss" scoped>
 .container {
   background: #111;
-  border: 1px solid #999;
   border-radius: 2em;
   display: flex;
   align-items: center;
@@ -99,7 +98,7 @@ async function disconnect() {
     padding-left: 0.7rem;
     background: none;
     color: inherit;
-    border-left: 1px solid #333;
+    border-left: 1px solid #222;
 
     &:hover {
       color: #e54;
@@ -116,6 +115,7 @@ button {
   font-weight: 500;
   letter-spacing: 0.05rem;
   transition: all 0.3s;
+  font: inherit;
 
   &:hover {
     cursor: pointer;
