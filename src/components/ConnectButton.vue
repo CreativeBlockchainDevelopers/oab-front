@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { notify } from '@kyvg/vue3-notification';
 import { computed } from 'vue';
-import web3 from '../web3';
+import web3 from '@/web3';
 
 const isChainIdValid = computed(() => web3.isChainIdValid.value);
 const selectedAccount = computed(() => web3.selectedAccount.value);

@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import ConnectButton from './components/ConnectButton.vue';
-import MintButton from './components/MintButton.vue';
-import NotificationPanel from './components/NotificationPanel.vue';
-import web3 from './web3';
+import ConnectButton from '@/components/ConnectButton.vue';
+import MintButton from '@/components/MintButton.vue';
+import NotificationPanel from '@/components/NotificationPanel.vue';
 </script>
 
 <script lang="ts">
+import web3 from '@/web3';
+
 export default {
   async mounted(): Promise<void> {
     await web3.tryAutoConnect();

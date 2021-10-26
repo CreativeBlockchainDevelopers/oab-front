@@ -2,7 +2,7 @@
 import { notify } from '@kyvg/vue3-notification';
 import { ref, computed } from 'vue';
 import Web3Lib from 'web3';
-import web3 from '../web3';
+import web3 from '@/web3';
 
 const currencySymbol = computed(() => web3.currencySymbol());
 const selectedAccount = computed(() => web3.selectedAccount.value);

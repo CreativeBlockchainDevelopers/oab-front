@@ -5,7 +5,7 @@ import Web3 from 'web3';
 import { AbiItem } from 'web3-utils';
 import Web3EthContract, { Contract } from 'web3-eth-contract';
 import { notify } from '@kyvg/vue3-notification';
-import abi from '../assets/abi.json';
+import abi from '@/assets/abi.json';
 import api from './api';
 import { chains } from './chains';
 
@@ -28,9 +28,9 @@ const web3Modal = new Web3Modal({
 });
 
 // env variables
-const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS as string;
-const fallbackProvider = import.meta.env.VITE_FALLBACK_PROVIDER;
-const contractChainId = Number.parseInt(import.meta.env.VITE_CONTRACT_CHAIN_ID as string, 10);
+const contractAddress = process.env.VUE_APP_CONTRACT_ADDRESS as string;
+const fallbackProvider = process.env.VUE_APP_FALLBACK_PROVIDER;
+const contractChainId = Number.parseInt(process.env.VUE_APP_CONTRACT_CHAIN_ID as string, 10);
 const contractChainName = chains.find((chain) => chain.chainId === contractChainId)?.name ?? 'Unknown chain';
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -60,7 +60,9 @@ async function disconnect(): Promise<void> {
   }
 
   // Unsubscribe from events
-  provider?.removeAllListeners();
+  if (provider?.removeAllListeners) {
+    provider.removeAllListeners();
+  }
 
   web3Modal.clearCachedProvider();
   provider = null;
