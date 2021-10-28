@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { notify } from '@kyvg/vue3-notification';
 import { ref, computed } from 'vue';
-import Web3Lib from 'web3';
 import web3 from '@/web3';
 
 const currencySymbol = computed(() => web3.currencySymbol());
@@ -33,7 +32,7 @@ async function mint() {
 
 <template>
   <div>
-    Price: {{ Web3Lib.utils.fromWei(web3.tokenPrice.value.toString()) }} {{ currencySymbol }}
+    Price: {{ web3.humanTokenPrice() }} {{ currencySymbol }}
   </div>
   <div
     v-if="isConnected"

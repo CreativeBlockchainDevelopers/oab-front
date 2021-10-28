@@ -1,74 +1,20 @@
-import { Contract } from 'web3-eth-contract';
+import { ContractAbstraction, Wallet } from '@taquito/taquito';
 
-interface TxError {
-  code: number,
-  message: string,
-  stack: string,
+async function getStorage(contract: ContractAbstraction<Wallet>): Promise<any> {
+  return contract.storage();
 }
 
-async function getPrice(contract: Contract): Promise<bigint> {
-  return new Promise((resolve, reject) => {
-    contract.methods.PRICE().call({}, 'latest', (error: TxError, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(BigInt(data));
-    });
-  });
-}
-
-async function getMaxTokens(contract: Contract): Promise<number> {
-  return new Promise((resolve, reject) => {
-    contract.methods.MAX_TOKENS().call({}, 'latest', (error: TxError, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(Number(data));
-    });
-  });
-}
-
-async function getTotalSupply(contract: Contract): Promise<number> {
-  return new Promise((resolve, reject) => {
-    contract.methods.totalSupply().call({}, 'latest', (error: TxError, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(Number(data));
-    });
-  });
-}
-
-async function getSaleState(contract: Contract): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    contract.methods.saleIsActive().call({}, 'latest', (error: TxError, data: string) => {
-      if (error) {
-        reject(error);
-      }
-      resolve(Boolean(data));
-    });
-  });
-}
-
-async function sendMint(contract: Contract, tokenPrice: bigint, amount = 1): Promise<string> {
-  const n = BigInt(amount);
-  return new Promise((resolve, reject) => {
-    contract.methods.mint(n).send({
-      value: (n * tokenPrice).toString(),
-    }, (error: TxError, data: string) => {
-      if (error) {
-        reject(error);
-      } else {
-        resolve(String(data));
-      }
-    });
-  });
+async function sendMint(
+  contract: ContractAbstraction<Wallet>,
+  amount = 1,
+): Promise<void> {
+  console.log('Sending...');
+  const op = await contract.methods.mint(amount).send();
+  console.log('Waiting for confirmation...');
+  await op.confirmation();
 }
 
 export default {
-  getPrice,
-  getMaxTokens,
-  getTotalSupply,
-  getSaleState,
+  getStorage,
   sendMint,
 };

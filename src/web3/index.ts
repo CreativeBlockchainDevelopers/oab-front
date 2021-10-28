@@ -1,48 +1,16 @@
 import { ref } from 'vue';
-import Web3Modal from 'web3modal';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import Web3 from 'web3';
-import { AbiItem } from 'web3-utils';
-import Web3EthContract, { Contract } from 'web3-eth-contract';
-import { notify } from '@kyvg/vue3-notification';
-import abi from '@/assets/abi.json';
+import { TezosToolkit } from '@taquito/taquito';
+import { BeaconWallet } from '@taquito/beacon-wallet';
+import { NetworkType } from '@airgap/beacon-sdk';
 import api from './api';
-import { chains } from './chains';
-
-enum NotificationId {
-  WRONG_CHAIN = -1000,
-}
-
-const providerOptions = {
-  walletconnect: {
-    package: WalletConnectProvider,
-    options: {
-      infuraId: '_',
-    },
-  },
-};
-
-const web3Modal = new Web3Modal({
-  cacheProvider: true,
-  providerOptions,
-});
 
 // env variables
 const contractAddress = process.env.VUE_APP_CONTRACT_ADDRESS as string;
-const fallbackProvider = process.env.VUE_APP_FALLBACK_PROVIDER;
-const contractChainId = Number.parseInt(process.env.VUE_APP_CONTRACT_CHAIN_ID as string, 10);
-const contractChainName = chains.find((chain) => chain.chainId === contractChainId)?.name ?? 'Unknown chain';
+const fallbackProvider = process.env.VUE_APP_FALLBACK_PROVIDER as string;
+const contractChainId = process.env.VUE_APP_CONTRACT_CHAIN_ID as NetworkType;
+let wallet: BeaconWallet | undefined;
+const tezos = new TezosToolkit(fallbackProvider);
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-const fallbackContract: Contract = new Web3EthContract(abi as AbiItem[], contractAddress);
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-fallbackContract.setProvider(fallbackProvider);
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let provider: any;
-let contract: null | Contract = null;
 const totalSupply = ref(0);
 const maxTokens = ref(0);
 const tokenPrice = ref(BigInt(0));
@@ -53,21 +21,13 @@ const selectedAccount = ref<null | string>(null);
 const isMinting = ref(false);
 
 async function disconnect(): Promise<void> {
-  console.log('Killing the wallet connection', provider);
+  console.log('Killing the wallet connection');
 
-  if (provider?.close) {
-    await provider.close();
+  if (wallet) {
+    await wallet.client.destroy();
+    await wallet.clearActiveAccount();
+    wallet = undefined;
   }
-
-  // Unsubscribe from events
-  if (provider?.removeAllListeners) {
-    provider.removeAllListeners();
-  }
-
-  web3Modal.clearCachedProvider();
-  provider = null;
-  contract = null;
-
   selectedAccount.value = null;
   isChainIdValid.value = false;
 }
@@ -75,68 +35,46 @@ async function disconnect(): Promise<void> {
 async function fetchContractData() {
   console.log('fetchContractData');
 
-  let availableContract = fallbackContract;
-  if (contract !== null) {
-    availableContract = contract;
-  }
-
-  tokenPrice.value = await api.getPrice(availableContract);
-  maxTokens.value = await api.getMaxTokens(availableContract);
-  totalSupply.value = await api.getTotalSupply(availableContract);
-  saleState.value = await api.getSaleState(availableContract);
+  const availableContract = await tezos.wallet.at(contractAddress);
+  const storage = await api.getStorage(availableContract);
+  tokenPrice.value = storage.price;
+  maxTokens.value = storage.max_supply.c[0];
+  totalSupply.value = storage.n_minted.c[0];
+  saleState.value = storage.sale_started;
 }
 
 async function fetchAccountData() {
   console.log('fetchAccountData');
 
-  // Get a Web3 instance for the wallet
-  const web3 = new Web3(provider);
-
-  console.log('Web3 instance is', web3);
-
-  // Get list of accounts of the connected wallet
-  const accounts = await web3.eth.getAccounts();
-
-  // MetaMask does not give you all accounts, only the selected account
-  console.log('Got accounts', accounts);
-  if (accounts.length < 1) {
-    disconnect();
-    return null;
+  if (wallet) {
+    selectedAccount.value = await wallet.getPKH();
   }
-  selectedAccount.value = accounts[0];
-
-  // Get connected chain id from Ethereum node
-  const chainId = await web3.eth.getChainId();
-  console.log('chainId', chainId);
-  isChainIdValid.value = chainId === contractChainId;
-  notify.close(NotificationId.WRONG_CHAIN);
-  if (!isChainIdValid.value) {
-    notify({
-      id: NotificationId.WRONG_CHAIN,
-      title: 'Wrong network',
-      text: `You are on the wrong chain.<br>Please change to ${contractChainName}.`,
-      type: 'warn',
-      duration: -1,
-    });
-    return web3;
-  }
-
-  contract = new web3.eth.Contract(abi as AbiItem[], contractAddress, {
-    from: selectedAccount.value,
-  });
-  console.log('initialized contract', contract);
-
-  fetchContractData();
-
-  return web3;
+  isChainIdValid.value = true;
 }
 
-async function connect(): Promise<void> {
+async function connect(noInteraction = false): Promise<void> {
   try {
-    if (provider) {
-      await disconnect();
+    if (!wallet) {
+      wallet = new BeaconWallet({
+        name: 'Test Certifier',
+        preferredNetwork: contractChainId,
+      });
     }
-    provider = await web3Modal.connect();
+
+    const activeAccount = await wallet.client.getActiveAccount();
+    if (activeAccount) {
+      tezos.setWalletProvider(wallet);
+    } else if (!noInteraction) {
+      await wallet.requestPermissions({
+        network: {
+          type: contractChainId,
+        },
+      });
+      tezos.setWalletProvider(wallet);
+    } else {
+      await fetchContractData();
+      return;
+    }
   } catch (error) {
     if (error !== undefined) {
       if (typeof error === 'string') {
@@ -144,76 +82,47 @@ async function connect(): Promise<void> {
       } else {
         throw error;
       }
-    } else if (!provider) {
-      throw new Error('Undefined provider');
     } else {
       throw new Error('Unknown error');
     }
   }
 
-  console.log('provider', provider);
-
-  // Subscribe to accounts change
-  provider.on('accountsChanged', () => {
-    console.log('accountsChanged');
-    fetchAccountData();
-  });
-
-  // Subscribe to chainId change
-  provider.on('chainChanged', () => {
-    console.log('chainChanged');
-    fetchAccountData();
-  });
-
-  // Subscribe to provider connection
-  provider.on('connect', () => {
-    console.log('connect');
-    fetchAccountData();
-  });
-
-  // Subscribe to provider disconnection
-  provider.on('disconnect', () => {
-    console.log('disconnect');
-    fetchAccountData();
-  });
+  console.log('wallet', wallet);
 
   await fetchAccountData();
+  await fetchContractData();
 }
 
 setInterval(async () => {
-  if (contract !== null) {
+  if (selectedAccount.value !== null) {
     await fetchContractData();
   }
-}, 10_000);
+}, 60_000);
 
 async function mint(amount = 1): Promise<void> {
-  if (contract === null) {
-    throw new Error();
-  }
-
   if (isMinting.value) {
     throw new Error();
   }
   isMinting.value = true;
 
-  await fetchContractData();
+  const availableContract = await tezos.wallet.at(contractAddress);
   try {
-    await api.sendMint(contract, tokenPrice.value, amount);
+    await api.sendMint(availableContract, amount);
   } finally {
     isMinting.value = false;
   }
 }
 
 async function tryAutoConnect(): Promise<void> {
-  if (web3Modal.cachedProvider) {
-    await connect();
-  } else {
-    await fetchContractData();
-  }
+  await connect(true);
+}
+
+function humanTokenPrice(): number {
+  return Number(tokenPrice.value) / 1e6;
 }
 
 function currencySymbol(): string {
-  return chains.find((chain) => chain.chainId === contractChainId)?.nativeCurrency.symbol ?? '???';
+  return 'ꜩ';
 }
 
 export default {
@@ -228,5 +137,6 @@ export default {
   isChainIdValid,
   tokenPrice,
   saleState,
+  humanTokenPrice,
   currencySymbol,
 };
