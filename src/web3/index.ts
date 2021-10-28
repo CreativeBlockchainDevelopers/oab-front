@@ -13,7 +13,7 @@ const tezos = new TezosToolkit(fallbackProvider);
 
 const totalSupply = ref(0);
 const maxTokens = ref(0);
-const tokenPrice = ref(BigInt(0));
+const tokenPrice = ref(0);
 const isChainIdValid = ref(false);
 const saleState = ref(false);
 
@@ -37,10 +37,10 @@ async function fetchContractData() {
 
   const availableContract = await tezos.wallet.at(contractAddress);
   const storage = await api.getStorage(availableContract);
-  tokenPrice.value = storage.price;
-  maxTokens.value = storage.max_supply.c[0];
-  totalSupply.value = storage.n_minted.c[0];
-  saleState.value = storage.sale_started;
+  tokenPrice.value = storage.price ?? 1e6;
+  maxTokens.value = storage.max_tokens?.c[0] ?? 1e9;
+  totalSupply.value = storage.all_tokens.c[0];
+  saleState.value = !storage.paused;
 }
 
 async function fetchAccountData() {
@@ -107,7 +107,7 @@ async function mint(amount = 1): Promise<void> {
 
   const availableContract = await tezos.wallet.at(contractAddress);
   try {
-    await api.sendMint(availableContract, amount);
+    await api.sendMint(availableContract, tokenPrice.value, amount);
   } finally {
     isMinting.value = false;
   }
