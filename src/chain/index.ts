@@ -8,6 +8,8 @@ import api from './api';
 const contractAddress = process.env.VUE_APP_CONTRACT_ADDRESS as string;
 const fallbackProvider = process.env.VUE_APP_FALLBACK_PROVIDER as string;
 const contractChainId = process.env.VUE_APP_CONTRACT_CHAIN_ID as NetworkType;
+const appName = process.env.VUE_APP_NAME as string;
+
 let wallet: BeaconWallet | undefined;
 const tezos = new TezosToolkit(fallbackProvider);
 
@@ -56,7 +58,7 @@ async function connect(noInteraction = false): Promise<void> {
   try {
     if (!wallet) {
       wallet = new BeaconWallet({
-        name: 'Test Certifier',
+        name: appName,
         preferredNetwork: contractChainId,
       });
     }

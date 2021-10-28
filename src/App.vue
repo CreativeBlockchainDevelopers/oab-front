@@ -7,6 +7,8 @@ import NotificationPanel from '@/components/NotificationPanel.vue';
 <script lang="ts">
 import chain from '@/chain';
 
+const appName = process.env.VUE_APP_NAME as string;
+
 export default {
   async mounted(): Promise<void> {
     await chain.tryAutoConnect();
@@ -18,7 +20,7 @@ export default {
   <div class="wrapper">
     <header>
       <a href="#">
-        <h1>open art blocks</h1>
+        <h1>{{ appName }}</h1>
       </a>
       <ConnectButton />
     </header>
@@ -33,7 +35,7 @@ export default {
       </p>
       <p>Sale is active: {{ chain.saleState.value }}</p>
     </div>
-    <footer>open art blocks</footer>
+    <footer>{{ appName }}</footer>
     <NotificationPanel />
   </div>
 </template>
@@ -67,6 +69,7 @@ header {
   h1 {
     margin: 0;
     font-weight: 300;
+    text-transform: lowercase;
   }
 }
 
