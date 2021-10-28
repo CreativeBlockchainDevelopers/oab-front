@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { notify } from '@kyvg/vue3-notification';
 import { ref, computed } from 'vue';
-import web3 from '@/web3';
+import chain from '@/chain';
 
-const currencySymbol = computed(() => web3.currencySymbol());
-const selectedAccount = computed(() => web3.selectedAccount.value);
+const currencySymbol = computed(() => chain.currencySymbol());
+const selectedAccount = computed(() => chain.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
-const isChainIdValid = computed(() => web3.isChainIdValid.value);
-const canMint = computed(() => isConnected.value && !web3.isMinting.value && isChainIdValid.value);
+const isChainIdValid = computed(() => chain.isChainIdValid.value);
+const canMint = computed(() => isConnected.value && !chain.isMinting.value && isChainIdValid.value);
 const mintAmount = ref(1);
 const buttonTitle = computed(() => {
   if (!isConnected.value) {
@@ -21,7 +21,7 @@ const buttonTitle = computed(() => {
 async function mint() {
   try {
     const amount = mintAmount.value;
-    await web3.mint(amount);
+    await chain.mint(amount);
     notify({ text: `${amount} token${amount !== 1 ? 's' : ''} minted successfully`, type: 'success' });
   } catch (error: any) {
     console.error(error);
@@ -32,7 +32,7 @@ async function mint() {
 
 <template>
   <div>
-    Price: {{ web3.humanTokenPrice() }} {{ currencySymbol }}
+    Price: {{ chain.humanTokenPrice() }} {{ currencySymbol }}
   </div>
   <div
     v-if="isConnected"
@@ -43,7 +43,7 @@ async function mint() {
       class="mint-amount"
       type="number"
       min="1"
-      :max="web3.maxTokens.value - web3.totalSupply.value"
+      :max="chain.maxTokens.value - chain.totalSupply.value"
     >
     <button
       :disabled="!canMint"
@@ -60,12 +60,12 @@ async function mint() {
   >
     <button
       :title="buttonTitle"
-      @click="web3.connect()"
+      @click="chain.connect()"
     >
       Connect to mint
     </button>
   </div>
-  <div>{{ web3.totalSupply }} / {{ web3.maxTokens }}</div>
+  <div>{{ chain.totalSupply }} / {{ chain.maxTokens }}</div>
 </template>
 
 <style lang="scss" scoped>

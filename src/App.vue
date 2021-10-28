@@ -5,11 +5,11 @@ import NotificationPanel from '@/components/NotificationPanel.vue';
 </script>
 
 <script lang="ts">
-import web3 from '@/web3';
+import chain from '@/chain';
 
 export default {
   async mounted(): Promise<void> {
-    await web3.tryAutoConnect();
+    await chain.tryAutoConnect();
   },
 };
 </script>
@@ -31,7 +31,7 @@ export default {
       <p>
         <MintButton />
       </p>
-      <p>Sale is active: {{ web3.saleState.value }}</p>
+      <p>Sale is active: {{ chain.saleState.value }}</p>
     </div>
     <footer>open art blocks</footer>
     <NotificationPanel />

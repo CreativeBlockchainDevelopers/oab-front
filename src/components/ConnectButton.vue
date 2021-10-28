@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { notify } from '@kyvg/vue3-notification';
 import { computed } from 'vue';
-import web3 from '@/web3';
+import chain from '@/chain';
 
-const isChainIdValid = computed(() => web3.isChainIdValid.value);
-const selectedAccount = computed(() => web3.selectedAccount.value);
+const isChainIdValid = computed(() => chain.isChainIdValid.value);
+const selectedAccount = computed(() => chain.selectedAccount.value);
 const isConnected = computed(() => selectedAccount.value !== null);
 
 async function connect() {
   try {
-    await web3.connect();
+    await chain.connect();
     notify({ text: 'Connected', type: 'success' });
   } catch (error: any) {
     if (error?.message !== 'Modal closed by user' && error?.message !== 'Undefined provider') {
@@ -20,7 +20,7 @@ async function connect() {
 }
 
 async function disconnect() {
-  await web3.disconnect();
+  await chain.disconnect();
   notify({ text: 'Disconnected', type: 'info' });
 }
 </script>
