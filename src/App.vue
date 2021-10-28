@@ -33,7 +33,8 @@ export default {
       <p>
         <MintButton />
       </p>
-      <p>Sale is active: {{ chain.saleState.value }}</p>
+      <p v-if="chain.saleState.value">The sale is active!</p>
+      <p v-else>The sale is not active.</p>
     </div>
     <footer>{{ appName }}</footer>
     <NotificationPanel />

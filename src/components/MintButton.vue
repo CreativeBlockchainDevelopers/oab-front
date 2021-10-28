@@ -32,13 +32,16 @@ async function mint() {
 
 <template>
   <div>
-    Price: {{ chain.humanTokenPrice() }} {{ currencySymbol }}
+    Token price: <span :title="`${chain.tokenPrice.value} mutez`">
+      {{ chain.humanTokenPrice() }} {{ currencySymbol }}
+    </span>
   </div>
   <div
-    v-if="isConnected"
+    v-if="isConnected || !chain.saleState.value"
     class="container"
   >
     <input
+      :disabled="!canMint"
       v-model="mintAmount"
       class="mint-amount"
       type="number"
@@ -65,7 +68,7 @@ async function mint() {
       Connect to mint
     </button>
   </div>
-  <div>{{ chain.totalSupply }} / {{ chain.maxTokens }}</div>
+  <div>{{ chain.totalSupply }} of {{ chain.maxTokens }} tokens minted</div>
 </template>
 
 <style lang="scss" scoped>
@@ -103,7 +106,6 @@ button {
   text-transform: uppercase;
   font-weight: 500;
   letter-spacing: 0.05em;
-  transition: all 0.3s;
   font-size: inherit;
   line-height: 1em;
   font: inherit;
@@ -112,6 +114,10 @@ button {
     cursor: pointer;
     background: #1af;
   }
+}
+
+button, .mint-amount {
+  transition: all 0.3s;
 
   &:disabled {
     cursor: inherit;
