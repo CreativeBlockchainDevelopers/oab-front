@@ -2,6 +2,7 @@
 import ConnectButton from '@/components/ConnectButton.vue';
 import MintButton from '@/components/MintButton.vue';
 import NotificationPanel from '@/components/NotificationPanel.vue';
+import TokenGallery from '@/components/TokenGallery.vue';
 </script>
 
 <script lang="ts">
@@ -35,6 +36,7 @@ export default {
       </p>
       <p v-if="chain.saleState.value">The sale is active!</p>
       <p v-else>The sale is not active.</p>
+      <TokenGallery />
     </div>
     <footer>{{ appName }}</footer>
     <NotificationPanel />

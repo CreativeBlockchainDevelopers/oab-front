@@ -1,5 +1,5 @@
 import { ref } from 'vue';
-import { TezosToolkit } from '@taquito/taquito';
+import { TezosToolkit, MichelCodecPacker } from '@taquito/taquito';
 import { BeaconWallet } from '@taquito/beacon-wallet';
 import { NetworkType } from '@airgap/beacon-sdk';
 import api from './api';
@@ -12,12 +12,15 @@ const appName = process.env.VUE_APP_NAME as string;
 
 let wallet: BeaconWallet | undefined;
 const tezos = new TezosToolkit(fallbackProvider);
+// pack the big map keys locally
+tezos.setPackerProvider(new MichelCodecPacker());
 
 const totalSupply = ref(0);
 const maxTokens = ref(0);
 const tokenPrice = ref(0);
 const isChainIdValid = ref(false);
 const saleState = ref(false);
+const mintedTokens = ref<any[]>();
 
 const selectedAccount = ref<null | string>(null);
 const isMinting = ref(false);
@@ -43,6 +46,13 @@ async function fetchContractData() {
   maxTokens.value = storage.max_tokens?.c[0] ?? 1e9;
   totalSupply.value = storage.all_tokens.c[0];
   saleState.value = !storage.paused;
+  // get the last 10 mints
+  const tokenMetadata = await storage.token_metadata.getMultipleValues(
+    Array(totalSupply.value).fill(0).map((_, i) => i).slice(-10),
+  );
+  const tokenMetadataUris = Array.from(tokenMetadata.values())
+    .map((metadata: any) => metadata.token_info.get('').match(/.{1,2}/g).map((v: string) => String.fromCharCode(parseInt(v, 16))).join(''));
+  mintedTokens.value = await api.requestUris(tokenMetadataUris);
 }
 
 async function fetchAccountData() {
@@ -141,4 +151,5 @@ export default {
   saleState,
   humanTokenPrice,
   currencySymbol,
+  mintedTokens,
 };
