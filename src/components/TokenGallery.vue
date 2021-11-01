@@ -10,15 +10,15 @@ const mintedTokens = computed(() => chain.mintedTokens.value?.reverse());
   <div class="tokens">
     <a
       v-for="token in mintedTokens"
-      :key="token.tokenID"
+      :key="token.tokenId"
       :href="token.artifactUri"
       class="token"
     >
       <div>
         <div class="token__title">
-          #{{ token.tokenID }}: {{ token.name }}
+          #{{ token.tokenId }}: {{ token.name }}
         </div>
-        <img class="token__preview" :src="token.displayUri" :alt="token.name">
+        <img class="token__preview" :src="token.thumbnailUri" :alt="token.name">
       </div>
     </a>
   </div>
@@ -48,6 +48,7 @@ const mintedTokens = computed(() => chain.mintedTokens.value?.reverse());
     &__preview {
       display: block;
       width: 100%;
+      aspect-ratio: 1;
     }
   }
 }
