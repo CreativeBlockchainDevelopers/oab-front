@@ -1,8 +1,8 @@
 # OpenArtBlocks-Frontend-Tezos
 
-This project is part of [OpenArtBlocks](https://github.com/GenArtLabs/OpenArtBlocks), an open-source self-hosted approach to NFT collection publishing on the Tezos and Ethereum blockchains.
+This project is part of [OpenArtBlocks](https://github.com/GenArtLabs/OpenArtBlocks), an open-source self-hosted approach to creating generative art on the Tezos and Ethereum blockchains. This allows any artist to create generative art that is constructed only at the time of minting, thus making the art truly generative.
 
-This is a Vue3 + TypeScript dApp designed for end users. It provides a simple interface to connect to the Tezos blockchain network, mint NFTs and explore the minted artworks associated with your FA2 smart contract (which must comply with the [OpenArtBlocks smart contract specifications](https://github.com/GenArtLabs/OpenArtBlocks-Smart-Contract-Tezos)).
+This repository is a Vue3 + TypeScript dApp designed for end users. It provides a simple interface to connect to the Tezos blockchain network, mint NFTs and explore the minted artworks associated with your FA2 smart contract (which must comply with the [OpenArtBlocks smart contract specifications](https://github.com/GenArtLabs/OpenArtBlocks-Smart-Contract-Tezos)).
 
 ## Project setup
 ### Set up the repository
